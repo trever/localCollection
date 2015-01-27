@@ -550,8 +550,18 @@
   };
 
   siftWrap.prototype.find = function(query){
+    var _this = this;
     var x = sift(query, this.target);
-    return x;
+    var self = function(){};
+    self.prototype = new Array;
+    self.prototype.count = this.count;
+    var oo = new self;
+
+    x.forEach(function(ob){
+      oo.push(ob);
+    });
+
+    return oo
   };
 
   siftWrap.prototype.findOne = function(query){
@@ -577,9 +587,8 @@
     return this.target
   };
 
-  siftWrap.prototype.count = function(query){
-    var x = this.find(query);
-    return x.length
+  siftWrap.prototype.count = function(){
+    return this.length
   };
 
   siftWrap.prototype.insert = function(doc){

@@ -4,11 +4,23 @@ A Sift.JS wrapper that adds array modification and MongoDB collection-like insta
 ## MongoDB inspired array filtering
 For extended documentation, checkout [MongoDB's Docs](http://docs.mongodb.org/manual/reference/operator/query/) and [Sift.JS](https://github.com/crcn/sift.js)
 
+## Installation
+
+```javascript
+
+npm install localcollection --save
+
+var localCollection = require('localcollection');
+
+var Collection = new localCollection( YOUR_ARRAY/OBJECT );
+
+```
+
 ## Node.js Examples
 
 ```javascript
 
-var localCollection = require('sift');
+var localCollection = require('localcollection');
 
 var someArray = [{id: 1}, {id:2}, {id:3}];
 

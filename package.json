@@ -1,5 +1,5 @@
 {
-  "name": "localCollection",
+  "name": "localcollection",
   "version": "0.0.1",
   "description": "MongoDB Query Style Array Filtering and Modifying",
   "main": "index.js",

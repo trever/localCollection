@@ -19,102 +19,39 @@ For extended documentation, checkout http://docs.mongodb.org/manual/reference/op
 
 ```javascript
 
-var sift = require('sift');
+var localCollection = require('sift');
 
-//intersecting arrays
-var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']
+var someArray = [{id: 1}, {id:2}, {id:3}];
 
-//regexp filter
-var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
+var SomeArray = new localCollection(someArray);
 
+// Find
+SomeArray.find({id:2});
+// [ {id:2} ]
 
-//A *sifter* is returned if the second parameter is omitted
-var siftPeople = sift({
+// FindOne
+SomeArray.findOne({id:2});
+// {id:2}
 
-	//you can also filter against functions
-	name: function(value) {
-		return value.length == 5;
-	}
-});
+// Remove
+SomeArray.remove({id:2});
+// [ {id:1}, {id:3} ]
 
-//filtered: [{ name: 'craig' }]
-siftPeople([{
-	name: 'craig',
-},
-{
-	name: 'john'
-},
-{
-	name: 'jake'
-}]);
+// Count
+SomeArray.find({id:3}).count()
+// 1
 
+// Update
+SomeArray.update({id:3}, function(ob){ob.magic = true});
+// [ {id:1}, {id:3, magic:true} ]
 
-//you can test *single values* against your custom sifter
-siftPeople.test({ name: 'sarah' }); //true
-siftPeople.test({ name: 'tim' }); //false\
-```
+// Insert
+SomeArray.insert({yoman: 'guild'});
+// [ {id:1}, {id:3, magic:true}, {yoman: 'guild'} ]
 
-## Browser Examples
-```html
-<html>
-	<head>
-		<script src="https://raw.github.com/crcn/sift.js/master/sift.min.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			//regexp filter
-			var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
-		</script>
-	</head>
-	<body>
-	</body>
-</html>
-```
-
-## API
-
-### .sift(filter[, array][, selectorFn])
-
-- `filter` - the filter to use against the target array
-- `array` - sifts against target array. Without this, a function is returned
-- `selectorFn` - selector for the values within the array. 
-
-With an array:
-
-```javascript
-sift({$exists:true}, ['craig',null]); //['craig']
-```
-
-Without an array, a sifter is returned:
-
-```javascript
-var siftExists = sift({$exists:true});
-
-siftExists(['craig',null]); //['craig']
-```
-
-With a selector:
-
-```javascript
-var sifter = sift({$exists:true}, function(user) {
-	return !!user.name;
-});
-
-
-sifter([
-	{
-		name: "Craig"
-	},
-	{
-		name: null
-	}
-])
-```
-
-With your sifter, you can also **test** values:
-
-```javascript
-siftExists.test(null); //false
-siftExists.test('craig'); //true
-```
+// FindAndModify
+SomeArray.findAndModify({yoman:'guild'}, function(ob){ob.happiness = true});
+// [ {yoman:'guild', happiness:true} ]
 
 
 ## Supported Operators:
@@ -129,13 +66,13 @@ Intersecting two arrays:
  
 ```javascript
 //filtered: ['Brazil']
-sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); 
+SomeArray.find({ $in: ['Costa Rica','Brazil'] }); 
 ``` 
 
 Here's another example. This acts more like the $or operator:
 
 ```javascript
-sift({ location: { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 'Brazil' });
+SomeArray.find({ location: { $in: ['Costa Rica','Brazil'] } });
 ```
 
 ### $nin
@@ -144,7 +81,7 @@ Opposite of $in:
 
 ```javascript
 //filtered: ['Haiti','Peru','Chile']
-sift({ $nin: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); 
+SomeArray.find({ $nin: ['Costa Rica','Brazil'] }); 
 ``` 
 
 ### $exists
